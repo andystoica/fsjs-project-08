@@ -12,6 +12,8 @@ var del        = require('del'),
     eslint     = require('gulp-eslint'),
     runSequence   = require('run-sequence');
 
+gulp.task('default', ['build']);
+
 
 
 /**
@@ -83,10 +85,13 @@ gulp.task('clean', () => {
  * copying the icons subfolder
  */
 gulp.task('build', () => {
-    runSequence('clean', ['scripts', 'styles', 'images'], () => {
-        gulp.src('src/icons/**/*')
-        .pipe(gulp.dest('dist/icons'));
-    })
+    runSequence(
+        'clean',
+        ['scripts', 'styles', 'images'],
+        () => {
+            gulp.src('src/icons/**/*')
+            .pipe(gulp.dest('dist/icons'));
+        })
 });
 
 
@@ -107,9 +112,3 @@ gulp.task('serve', () => {
 gulp.task('watch', ['serve'], () => {
     gulp.watch('src/js/**/*', ['scripts']);
 });
-
-
-/**
- * Default gulp task runs the build command
- */
-gulp.task('default', ['build']);
