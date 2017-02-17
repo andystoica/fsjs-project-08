@@ -9,7 +9,8 @@ var del        = require('del'),
     imagemin   = require('gulp-imagemin'),
     rename     = require('gulp-rename'),
     connect    = require('gulp-connect'),
-    eslint     = require('gulp-eslint');
+    eslint     = require('gulp-eslint'),
+    runSequence   = require('run-sequence');
 
 
 
@@ -28,7 +29,7 @@ gulp.task('eslint', () => {
  * Concatenates and minifies all the .js files inside ./src/js folder
  * generates the source maps and copies everyting to ./dist folder
  */
-gulp.task('scripts', ['eslint', 'clean'], () => {
+gulp.task('scripts', ['eslint'], () => {
     return gulp.src([
             'src/js/circle/autogrow.js',
             'src/js/circle/circle.js',
@@ -47,7 +48,7 @@ gulp.task('scripts', ['eslint', 'clean'], () => {
  * Compiles and minifies all the scss files inside ./src/sass folder
  * generates the source maps and copies everyting to ./dist folder
  */
-gulp.task('styles', ['clean'], () => {
+gulp.task('styles', () => {
     return gulp.src('src/sass/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({ outputStyle: 'compressed' }))
@@ -61,7 +62,7 @@ gulp.task('styles', ['clean'], () => {
  * Optimises all images inside ./src/images folder and
  * copies them to the ./dist folder
  */
-gulp.task('images', ['clean'], () => {
+gulp.task('images', () => {
     return gulp.src('src/images/*')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/content'))
@@ -81,9 +82,11 @@ gulp.task('clean', () => {
  * calling the scripts, styles and images task and finally
  * copying the icons subfolder
  */
-gulp.task('build', ['scripts', 'styles', 'images'], () => {
-    gulp.src('src/icons/**/*')
+gulp.task('build', () => {
+    runSequence('clean', ['scripts', 'styles', 'images'], () => {
+        gulp.src('src/icons/**/*')
         .pipe(gulp.dest('dist/icons'));
+    })
 });
 
 
